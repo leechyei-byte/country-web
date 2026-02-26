@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>World Countries Viewer - 國家資訊查詢系統</title>
+    <!-- OpenCC for Traditional Chinese conversion -->
+    <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="loadingMessage" class="loading-overlay">資料載入中 (Loading data)...</div>
+
+    <div class="main-container">
+        <!-- Top Navigation Bar -->
+        <div class="top-bar">
+            <button id="prevBtn" class="big-btn">◀</button>
+            <div id="infoTitle" class="info-title">國家資訊</div>
+            <button id="nextBtn" class="big-btn">▶</button>
+        </div>
+        <div class="export-bar" style="text-align: right; padding-right: 30px; margin-top: -20px;">
+            <button id="exportBtn" class="export-btn">匯出 PDF</button>
+        </div>
+
+        <!-- Flag Area -->
+        <div class="flag-frame">
+            <img id="flagImg" src="" alt="Flag" style="display: none;">
+            <div id="flagText" class="flag-text">載入中...</div>
+        </div>
+
+        <!-- Details Area -->
+        <div class="details-frame">
+            <div id="areaLabel" class="area-label">領土面積 : </div>
+        </div>
+
+        <!-- Range Buttons -->
+        <div id="rangeFrame" class="range-frame">
+            <!-- Buttons injected here -->
+        </div>
+    </div>
+
+    <!-- Modal for Range List -->
+    <div id="rangeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">國家列表</h3>
+                <span id="closeModal" class="close">&times;</span>
+            </div>
+            <div id="modalList" class="modal-list">
+                <!-- List items injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Enlarged Flag -->
+    <div id="flagModal" class="modal">
+        <div class="modal-content flag-modal-content">
+            <div class="modal-header">
+                <h3 id="flagModalTitle">放大國旗</h3>
+                <span id="closeFlagModal" class="close">&times;</span>
+            </div>
+            <div class="modal-flag-container">
+                <img id="enlargedFlagImg" src="" alt="Enlarged Flag">
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入可以讓本地直接讀取的 json 資料變數 -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
