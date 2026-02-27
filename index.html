@@ -5,8 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>World Countries Viewer - 國家資訊查詢系統</title>
-    <!-- OpenCC for Traditional Chinese conversion -->
-    <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -14,14 +12,19 @@
     <div id="loadingMessage" class="loading-overlay">資料載入中 (Loading data)...</div>
 
     <div class="main-container">
-        <!-- Top Navigation Bar -->
         <div class="top-bar">
-            <button id="prevBtn" class="big-btn">◀</button>
-            <div id="infoTitle" class="info-title">國家資訊</div>
-            <button id="nextBtn" class="big-btn">▶</button>
-        </div>
-        <div class="export-bar" style="text-align: right; padding-right: 30px; margin-top: -20px;">
-            <button id="exportBtn" class="export-btn">匯出 PDF</button>
+            <div style="flex: 1; display: flex; justify-content: flex-end; padding-right: 20px;">
+                <button id="prevBtn" class="big-btn">◀</button>
+            </div>
+            <div
+                style="width: 550px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;">
+                <div id="infoTitle" class="info-title" style="white-space: nowrap;">國家資訊</div>
+                <div id="capitalTitle" style="font-size: 1.6rem; margin-top: 5px; color: #bbb; white-space: nowrap;">首都:
+                    載入中...</div>
+            </div>
+            <div style="flex: 1; display: flex; justify-content: flex-start; padding-left: 20px;">
+                <button id="nextBtn" class="big-btn">▶</button>
+            </div>
         </div>
 
         <!-- Flag Area -->
@@ -54,18 +57,24 @@
         </div>
     </div>
 
-    <!-- Modal for Enlarged Flag -->
-    <div id="flagModal" class="modal">
-        <div class="modal-content flag-modal-content">
+    <!-- Modal for Search -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
             <div class="modal-header">
-                <h3 id="flagModalTitle">放大國旗</h3>
-                <span id="closeFlagModal" class="close">&times;</span>
+                <h3>搜尋國家</h3>
+                <span id="closeSearchModal" class="close">&times;</span>
             </div>
-            <div class="modal-flag-container">
-                <img id="enlargedFlagImg" src="" alt="Enlarged Flag">
+            <div style="padding: 10px 20px;">
+                <input type="text" id="searchInput" placeholder="輸入國家名稱 (中英文皆可)..."
+                    style="width: 90%; padding: 10px; font-size: 1.2rem; border: 1px solid #ccc; border-radius: 5px;">
+            </div>
+            <div id="searchList" class="modal-list">
+                <!-- Search items injected here -->
             </div>
         </div>
     </div>
+
+
 
     <!-- 引入可以讓本地直接讀取的 json 資料變數 -->
     <script src="data.js"></script>
