@@ -1,18 +1,9 @@
 let validCountries = [];
 let currentIndex = 0;
-let converter = null;
 
 // The data is loaded via data.js which defines `countriesData`.
 
 document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        if (window.OpenCC) {
-            converter = window.OpenCC.Converter({ from: 'cn', to: 'tw' });
-        }
-    } catch (e) {
-        console.warn('OpenCC initialization failed', e);
-    }
-
     await loadData();
     setupUI();
     setupEventListeners();
@@ -37,12 +28,6 @@ async function loadData() {
             const name_en = c.name?.common || 'Unknown';
             let name_zh = c.translations?.zho?.common || name_en;
 
-            if (converter && name_zh !== name_en) {
-                try {
-                    name_zh = converter(name_zh);
-                } catch (e) { }
-            }
-
             let area = c.area;
             if (area === undefined || area === null) {
                 area = -1;
@@ -53,11 +38,15 @@ async function loadData() {
                 flag_url = flag_url.replace('/w320/', '/w1280/');
             }
 
+            const capital_en = c.capital_en || 'N/A';
+            const capital_zh = c.capital_zh || '無';
             validCountries.push({
                 en: name_en,
                 zh: name_zh,
                 area: area,
-                flag_url: flag_url
+                flag_url: flag_url,
+                capital_en: capital_en,
+                capital_zh: capital_zh
             });
         }
 
@@ -92,6 +81,37 @@ function setupUI() {
         rangeFrame.appendChild(btn);
     }
 
+    const actionContainer = document.createElement('div');
+    actionContainer.style.display = 'inline-flex';
+    actionContainer.style.flexDirection = 'column';
+    actionContainer.style.gap = '5px';
+    actionContainer.style.marginLeft = '15px';
+    actionContainer.style.verticalAlign = 'bottom';
+
+    const exportBtn = document.createElement('button');
+    exportBtn.id = 'exportBtn';
+    exportBtn.className = 'range-btn export-btn';
+    exportBtn.textContent = '匯出 PDF';
+    exportBtn.style.margin = '0';
+    exportBtn.style.width = '120px';
+
+    // Add event listener immediately
+    exportBtn.addEventListener('click', () => {
+        alert("網頁版暫不支援直接匯出 PDF，如果需要列印，建議使用原本的 Python 系統，或直接列印本網頁。");
+    });
+
+    const searchBtn = document.createElement('button');
+    searchBtn.className = 'range-btn';
+    searchBtn.textContent = `🔍 搜尋國家`;
+    searchBtn.style.backgroundColor = "darkblue";
+    searchBtn.style.margin = '0';
+    searchBtn.style.width = '120px';
+    searchBtn.onclick = showSearchWindow;
+
+    actionContainer.appendChild(exportBtn);
+    actionContainer.appendChild(searchBtn);
+    rangeFrame.appendChild(actionContainer);
+
     showCountry();
 }
 
@@ -103,7 +123,14 @@ function showCountry() {
     document.getElementById('areaLabel').textContent = `領土面積 : ${areaText}`;
 
     const titleText = `No. ${cData.rank} - ${cData.zh} (${cData.en})`;
-    document.getElementById('infoTitle').textContent = titleText;
+    const infoTitle = document.getElementById('infoTitle');
+    infoTitle.textContent = titleText;
+    infoTitle.style.fontSize = titleText.length < 45 ? '28px' : titleText.length < 65 ? '20px' : '16px';
+
+    const capitalText = cData.capital_en !== 'N/A' ? `首都: ${cData.capital_zh} (${cData.capital_en})` : '首都: 無資料';
+    const capTitle = document.getElementById('capitalTitle');
+    capTitle.textContent = capitalText;
+    capTitle.style.fontSize = capitalText.length < 45 ? '1.6rem' : capitalText.length < 65 ? '1.2rem' : '1.0rem';
 
     const flagImg = document.getElementById('flagImg');
     const flagText = document.getElementById('flagText');
@@ -170,13 +197,42 @@ function showRangeWindow(startIdx, endIdx) {
     modal.style.display = 'block';
 }
 
+function showSearchWindow() {
+    const modal = document.getElementById('searchModal');
+    const list = document.getElementById('searchList');
+    const input = document.getElementById('searchInput');
+
+    input.value = '';
+
+    function updateList() {
+        const query = input.value.trim().toLowerCase();
+        list.innerHTML = '';
+
+        validCountries.forEach((c, idx) => {
+            if (c.zh.toLowerCase().includes(query) || c.en.toLowerCase().includes(query)) {
+                const btn = document.createElement('button');
+                btn.className = 'list-item-btn';
+                btn.textContent = `No.${c.rank} - ${c.zh} (${c.en})`;
+                btn.onclick = () => {
+                    currentIndex = idx;
+                    showCountry();
+                    modal.style.display = 'none';
+                };
+                list.appendChild(btn);
+            }
+        });
+    }
+
+    input.onkeyup = updateList;
+    updateList(); // Run once initially to populate
+
+    modal.style.display = 'block';
+    setTimeout(() => input.focus(), 100);
+}
+
 function setupEventListeners() {
     document.getElementById('prevBtn')?.addEventListener('click', prevCountry);
     document.getElementById('nextBtn')?.addEventListener('click', nextCountry);
-
-    document.getElementById('exportBtn')?.addEventListener('click', () => {
-        alert("網頁版暫不支援直接匯出 PDF，如果需要列印，建議使用原本的 Python 系統，或直接列印本網頁。");
-    });
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') {
@@ -188,33 +244,22 @@ function setupEventListeners() {
 
     // Modal close logic
     const rangeModal = document.getElementById('rangeModal');
-    const flagModal = document.getElementById('flagModal');
+    const searchModal = document.getElementById('searchModal');
 
     document.getElementById('closeModal').onclick = () => {
         rangeModal.style.display = 'none';
     };
 
-    document.getElementById('closeFlagModal').onclick = () => {
-        flagModal.style.display = 'none';
+    document.getElementById('closeSearchModal').onclick = () => {
+        searchModal.style.display = 'none';
     };
 
     window.onclick = (e) => {
         if (e.target === rangeModal) {
             rangeModal.style.display = 'none';
         }
-        if (e.target === flagModal) {
-            flagModal.style.display = 'none';
+        if (e.target === searchModal) {
+            searchModal.style.display = 'none';
         }
-    };
-
-    // Enlarged Flag
-    document.getElementById('flagImg').onclick = () => {
-        if (validCountries.length === 0) return;
-        const cData = validCountries[currentIndex];
-        if (!cData.flag_url) return;
-
-        document.getElementById('flagModalTitle').textContent = `放大國旗 - ${cData.zh}`;
-        document.getElementById('enlargedFlagImg').src = cData.flag_url;
-        flagModal.style.display = 'block';
     };
 }
