@@ -66,7 +66,7 @@ class CountryApp(ctk.CTk):
         
         # Top Navigation Bar
         self.top_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
-        self.top_frame.grid(row=0, column=0, sticky="ew", pady=(20, 10))
+        self.top_frame.grid(row=0, column=0, sticky="ew", pady=(5, 5))
         self.top_frame.grid_columnconfigure(0, weight=1)
         self.top_frame.grid_columnconfigure(1, weight=0, minsize=550)
         self.top_frame.grid_columnconfigure(2, weight=1)
@@ -81,14 +81,14 @@ class CountryApp(ctk.CTk):
         self.info_title.pack()
 
         self.capital_label = ctk.CTkLabel(self.title_frame, text="首都: ", font=ctk.CTkFont(size=24), text_color="lightgray")
-        self.capital_label.pack(pady=(5, 0))
+        self.capital_label.pack(pady=0)
         
         self.next_button = ctk.CTkButton(self.top_frame, text="▶", command=self.next_country, font=ctk.CTkFont(size=40, weight="bold"), width=80, height=60)
         self.next_button.grid(row=0, column=2, sticky="w", padx=(20, 0))
         
         # Frame for flag
         self.flag_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
-        self.flag_frame.grid(row=1, column=0, sticky="nsew", padx=20, pady=10)
+        self.flag_frame.grid(row=1, column=0, sticky="nsew", padx=20, pady=5)
         self.flag_frame.grid_columnconfigure(0, weight=1)
         self.flag_frame.grid_rowconfigure(0, weight=1)
         
@@ -97,15 +97,15 @@ class CountryApp(ctk.CTk):
         
         # Frame for text details
         self.details_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
-        self.details_frame.grid(row=2, column=0, sticky="ew", padx=50, pady=(10, 10))
+        self.details_frame.grid(row=2, column=0, sticky="ew", padx=50, pady=(5, 5))
         self.details_frame.grid_columnconfigure(0, weight=1)
         
         self.area_label = ctk.CTkLabel(self.details_frame, text="領土面積 : ", font=ctk.CTkFont(size=24, weight="bold"))
-        self.area_label.grid(row=0, column=0, pady=10)
+        self.area_label.grid(row=0, column=0, pady=5)
 
         # Frame for range buttons
         self.range_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
-        self.range_frame.grid(row=3, column=0, pady=(10, 20))
+        self.range_frame.grid(row=3, column=0, pady=(5, 10))
         
         # Determine ranges
         total_countries = len(self.valid_countries)
@@ -124,7 +124,7 @@ class CountryApp(ctk.CTk):
         self.export_button = ctk.CTkButton(self.action_frame, text="匯出 PDF", command=self.export_pdf_thread, font=ctk.CTkFont(size=14, weight="bold"), width=120, height=30)
         self.export_button.pack(side="top", pady=(0, 5))
 
-        search_btn = ctk.CTkButton(self.action_frame, text="🔍 搜尋國家", font=ctk.CTkFont(size=16), width=120, height=30,
+        search_btn = ctk.CTkButton(self.action_frame, text="🔍 搜尋", font=ctk.CTkFont(size=16), width=120, height=30,
                                     command=self.show_search_window, fg_color="darkblue", hover_color="blue")
         search_btn.pack(side="top")
 

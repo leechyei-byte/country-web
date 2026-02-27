@@ -53,7 +53,7 @@ html {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 40px;
+  padding: 5px 40px;
   position: relative;
 }
 
@@ -100,7 +100,7 @@ button:hover {
 /* Flag Area */
 .flag-frame {
   flex: 1;
-  margin: 10px 20px;
+  margin: 5px 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -120,7 +120,7 @@ button:hover {
 
 /* Details Area */
 .details-frame {
-  padding: 10px 50px;
+  padding: 5px 50px;
   display: flex;
   justify-content: center;
 }
@@ -128,7 +128,7 @@ button:hover {
 .area-label {
   font-size: 24px;
   font-weight: bold;
-  margin: 10px 0;
+  margin: 5px 0;
 }
 
 /* Range Buttons */

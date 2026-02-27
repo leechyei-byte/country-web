@@ -102,7 +102,7 @@ function setupUI() {
 
     const searchBtn = document.createElement('button');
     searchBtn.className = 'range-btn';
-    searchBtn.textContent = `🔍 搜尋國家`;
+    searchBtn.textContent = `🔍 搜尋`;
     searchBtn.style.backgroundColor = "darkblue";
     searchBtn.style.margin = '0';
     searchBtn.style.width = '120px';
