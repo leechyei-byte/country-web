@@ -52,11 +52,9 @@ html {
 .top-bar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  justify-content: space-between;
+  padding: 20px 40px;
   position: relative;
-  gap: 30px;
 }
 
 button {
@@ -114,12 +112,10 @@ button:hover {
   max-height: 360px;
   /* based on python new_W/new_H logic */
   object-fit: contain;
-  cursor: pointer;
 }
 
 .flag-text {
   font-size: 16px;
-  cursor: pointer;
 }
 
 /* Details Area */
