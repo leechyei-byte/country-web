@@ -97,11 +97,15 @@ class CountryApp(ctk.CTk):
         
         # Frame for text details
         self.details_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
-        self.details_frame.grid(row=2, column=0, sticky="ew", padx=50, pady=(5, 5))
+        self.details_frame.grid(row=2, column=0, sticky="ew", padx=10, pady=(5, 5))
         self.details_frame.grid_columnconfigure(0, weight=1)
+        self.details_frame.grid_columnconfigure(1, weight=1)
         
         self.area_label = ctk.CTkLabel(self.details_frame, text="領土面積 : ", font=ctk.CTkFont(size=24, weight="bold"))
-        self.area_label.grid(row=0, column=0, pady=5)
+        self.area_label.grid(row=0, column=0, pady=5, sticky="e", padx=(0, 20))
+
+        self.population_label = ctk.CTkLabel(self.details_frame, text="國家人口 : ", font=ctk.CTkFont(size=24, weight="bold"))
+        self.population_label.grid(row=0, column=1, pady=5, sticky="w", padx=(20, 0))
 
         # Frame for range buttons
         self.range_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
@@ -152,6 +156,9 @@ class CountryApp(ctk.CTk):
             area = c.get('area')
             if area is None:
                 area = -1
+            
+            population = c.get('population', -1)
+            
             flag_url = c.get('flags', {}).get('png', '')
             if flag_url:
                 flag_url = flag_url.replace('/w320/', '/w1280/')
@@ -162,6 +169,7 @@ class CountryApp(ctk.CTk):
                 'en': name_en,
                 'zh': name_zh,
                 'area': area,
+                'population': population,
                 'flag_url': flag_url,
                 'capital_en': capital_en,
                 'capital_zh': capital_zh
@@ -391,6 +399,9 @@ class CountryApp(ctk.CTk):
             
         area_text = f"{c_data['area']:,.2f} km²" if c_data['area'] >= 0 else "無資料"
         self.area_label.configure(text=f"領土面積 : {area_text}")
+        
+        pop_text = f"{c_data.get('population', -1):,}" if c_data.get('population', -1) >= 0 else "無資料"
+        self.population_label.configure(text=f"國家人口 : {pop_text}")
         
         # Title updated: Rank - Name
         title_text = f"No. {c_data['rank']} - {c_data['zh']} ({c_data['en']})"

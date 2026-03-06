@@ -40,10 +40,16 @@ async function loadData() {
 
             const capital_en = c.capital_en || 'N/A';
             const capital_zh = c.capital_zh || '無';
+            let pop = c.population;
+            if (pop === undefined || pop === null) {
+                pop = -1;
+            }
+
             validCountries.push({
                 en: name_en,
                 zh: name_zh,
                 area: area,
+                population: pop,
                 flag_url: flag_url,
                 capital_en: capital_en,
                 capital_zh: capital_zh
@@ -121,6 +127,12 @@ function showCountry() {
 
     const areaText = cData.area >= 0 ? new Intl.NumberFormat().format(cData.area) + " km²" : "無資料";
     document.getElementById('areaLabel').textContent = `領土面積 : ${areaText}`;
+
+    const popText = cData.population >= 0 ? new Intl.NumberFormat().format(cData.population) : "無資料";
+    const popLabel = document.getElementById('populationLabel');
+    if (popLabel) {
+        popLabel.textContent = `國家人口 : ${popText}`;
+    }
 
     const titleText = `No. ${cData.rank} - ${cData.zh} (${cData.en})`;
     const infoTitle = document.getElementById('infoTitle');
