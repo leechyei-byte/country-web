@@ -52,6 +52,7 @@ class CountryApp(ctk.CTk):
         # Load and process data
         self.valid_countries = []
         self.current_index = 0
+        self.sort_mode = "area"
         self.load_data()
         
         # UI Setup
@@ -107,9 +108,12 @@ class CountryApp(ctk.CTk):
         self.population_label = ctk.CTkLabel(self.details_frame, text="國家人口 : ", font=ctk.CTkFont(size=24, weight="bold"))
         self.population_label.grid(row=0, column=1, pady=5, sticky="w", padx=(20, 0))
 
+        self.bottom_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+        self.bottom_frame.grid(row=3, column=0, pady=(5, 10))
+
         # Frame for range buttons
-        self.range_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
-        self.range_frame.grid(row=3, column=0, pady=(5, 10))
+        self.range_frame = ctk.CTkFrame(self.bottom_frame, fg_color="transparent")
+        self.range_frame.pack(side="top", pady=(0, 10))
         
         # Determine ranges
         total_countries = len(self.valid_countries)
@@ -122,15 +126,20 @@ class CountryApp(ctk.CTk):
                                 command=lambda s=start, e=end: self.show_range_window(s, e))
             btn.pack(side="left", padx=5)
 
-        self.action_frame = ctk.CTkFrame(self.range_frame, fg_color="transparent")
-        self.action_frame.pack(side="left", padx=15)
+        self.action_frame = ctk.CTkFrame(self.bottom_frame, fg_color="transparent")
+        self.action_frame.pack(side="top", fill="x")
+        self.action_frame.grid_columnconfigure((0, 1, 2), weight=1)
 
-        self.export_button = ctk.CTkButton(self.action_frame, text="匯出 PDF", command=self.export_pdf_thread, font=ctk.CTkFont(size=14, weight="bold"), width=120, height=30)
-        self.export_button.pack(side="top", pady=(0, 5))
+        self.export_button = ctk.CTkButton(self.action_frame, text="匯出 PDF", command=self.export_pdf_thread, font=ctk.CTkFont(size=14, weight="bold"), height=30)
+        self.export_button.grid(row=0, column=0, sticky="ew", padx=5)
 
-        search_btn = ctk.CTkButton(self.action_frame, text="🔍 搜尋", font=ctk.CTkFont(size=16), width=120, height=30,
+        search_btn = ctk.CTkButton(self.action_frame, text="🔍 搜尋", font=ctk.CTkFont(size=16), height=30,
                                     command=self.show_search_window, fg_color="darkblue", hover_color="blue")
-        search_btn.pack(side="top")
+        search_btn.grid(row=0, column=1, sticky="ew", padx=5)
+
+        self.sort_button = ctk.CTkButton(self.action_frame, text="排序: 面積", font=ctk.CTkFont(size=14, weight="bold"), height=30,
+                                         command=self.toggle_sort, fg_color="darkgreen", hover_color="green")
+        self.sort_button.grid(row=0, column=2, sticky="ew", padx=5)
 
         # Key bindings for arrow keys
         self.bind("<Left>", lambda event: self.prev_country())
@@ -175,8 +184,26 @@ class CountryApp(ctk.CTk):
                 'capital_zh': capital_zh
             })
             
-        # Sort by area descending
-        self.valid_countries.sort(key=lambda x: x['area'], reverse=True)
+        self.sort_data()
+
+    def toggle_sort(self):
+        if self.sort_mode == "area":
+            self.sort_mode = "population"
+            self.sort_button.configure(text="排序: 人口")
+        else:
+            self.sort_mode = "area"
+            self.sort_button.configure(text="排序: 面積")
+        
+        self.sort_data()
+        self.current_index = 0
+        self.show_country()
+
+    def sort_data(self):
+        if self.sort_mode == "area":
+            self.valid_countries.sort(key=lambda x: x['area'], reverse=True)
+        else:
+            self.valid_countries.sort(key=lambda x: x['population'], reverse=True)
+            
         for i, c in enumerate(self.valid_countries):
             c['rank'] = i + 1
 

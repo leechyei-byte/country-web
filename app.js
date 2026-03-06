@@ -1,5 +1,6 @@
 let validCountries = [];
 let currentIndex = 0;
+let sortMode = 'area';
 
 // The data is loaded via data.js which defines `countriesData`.
 
@@ -55,11 +56,7 @@ async function loadData() {
                 capital_zh: capital_zh
             });
         }
-
-        validCountries.sort((a, b) => b.area - a.area);
-        for (let i = 0; i < validCountries.length; i++) {
-            validCountries[i].rank = i + 1;
-        }
+        sortData();
 
         document.getElementById('loadingMessage').style.display = 'none';
 
@@ -76,6 +73,10 @@ function setupUI() {
     const rangeFrame = document.getElementById('rangeFrame');
     const totalCountries = validCountries.length;
 
+    const rangeBtnContainer = document.createElement('div');
+    rangeBtnContainer.style.display = 'flex';
+    rangeBtnContainer.style.gap = '10px';
+
     for (let i = 0; i < totalCountries; i += 50) {
         const start = i;
         const end = Math.min(i + 49, totalCountries - 1);
@@ -84,22 +85,30 @@ function setupUI() {
         btn.className = 'range-btn';
         btn.textContent = `排名 ${start + 1}-${end + 1}`;
         btn.onclick = () => showRangeWindow(start, end);
-        rangeFrame.appendChild(btn);
+        rangeBtnContainer.appendChild(btn);
     }
 
+    const bottomBlock = document.createElement('div');
+    bottomBlock.style.display = 'inline-flex';
+    bottomBlock.style.flexDirection = 'column';
+    bottomBlock.style.alignItems = 'center';
+
+    bottomBlock.appendChild(rangeBtnContainer);
+
     const actionContainer = document.createElement('div');
-    actionContainer.style.display = 'inline-flex';
-    actionContainer.style.flexDirection = 'column';
-    actionContainer.style.gap = '5px';
-    actionContainer.style.marginLeft = '15px';
-    actionContainer.style.verticalAlign = 'bottom';
+    actionContainer.style.display = 'flex';
+    actionContainer.style.flexDirection = 'row';
+    actionContainer.style.gap = '10px';
+    actionContainer.style.width = '100%';
+    actionContainer.style.marginTop = '10px';
+    actionContainer.style.marginBottom = '20px';
 
     const exportBtn = document.createElement('button');
     exportBtn.id = 'exportBtn';
     exportBtn.className = 'range-btn export-btn';
     exportBtn.textContent = '匯出 PDF';
     exportBtn.style.margin = '0';
-    exportBtn.style.width = '120px';
+    exportBtn.style.flex = '1';
 
     // Add event listener immediately
     exportBtn.addEventListener('click', () => {
@@ -111,13 +120,48 @@ function setupUI() {
     searchBtn.textContent = `🔍 搜尋`;
     searchBtn.style.backgroundColor = "darkblue";
     searchBtn.style.margin = '0';
-    searchBtn.style.width = '120px';
+    searchBtn.style.flex = '1';
     searchBtn.onclick = showSearchWindow;
+
+    const sortBtn = document.createElement('button');
+    sortBtn.id = 'sortBtn';
+    sortBtn.className = 'range-btn';
+    sortBtn.textContent = "排序: 面積";
+    sortBtn.style.backgroundColor = "darkgreen";
+    sortBtn.style.margin = '0';
+    sortBtn.style.flex = '1';
+    sortBtn.onclick = toggleSort;
 
     actionContainer.appendChild(exportBtn);
     actionContainer.appendChild(searchBtn);
-    rangeFrame.appendChild(actionContainer);
+    actionContainer.appendChild(sortBtn);
+    bottomBlock.appendChild(actionContainer);
+    rangeFrame.appendChild(bottomBlock);
 
+    showCountry();
+}
+
+function sortData() {
+    if (sortMode === 'area') {
+        validCountries.sort((a, b) => b.area - a.area);
+    } else {
+        validCountries.sort((a, b) => b.population - a.population);
+    }
+    for (let i = 0; i < validCountries.length; i++) {
+        validCountries[i].rank = i + 1;
+    }
+}
+
+function toggleSort() {
+    if (sortMode === 'area') {
+        sortMode = 'population';
+        document.getElementById('sortBtn').textContent = "排序: 人口";
+    } else {
+        sortMode = 'area';
+        document.getElementById('sortBtn').textContent = "排序: 面積";
+    }
+    sortData();
+    currentIndex = 0;
     showCountry();
 }
 
